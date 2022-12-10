@@ -11,7 +11,7 @@ public class Project {
 
     void Tzbet(String inPath) throws FileNotFoundException, IOException{
         Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath); //get currrentpath and then join
-        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut.xml");
+        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut1.xml");
         File inXml = new File(inFullPath.toString());
         File outXml = new File(outFullPath.toString());
         FileInputStream fis = new FileInputStream(inXml);
@@ -19,46 +19,59 @@ public class Project {
         Scanner sc = new Scanner(fis);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
         String line;
-        //int tagsDiff;
-        int overAllTabs=0;
+        int overAllTabs=0, rank, otag, ctag;
         while(sc.hasNextLine()){
             line = sc.nextLine();
-            //System.out.println(line);
-            //tagsDiff = isContainOpenTag(line) - isContainClosedTag(line);
-            if(isContainClosedTag(line) != isContainOpenTag(line)){
-                overAllTabs -= isContainClosedTag(line);
+            rank = lineRank(line);
+            otag = countOpenTag(line);
+            ctag = countClosedTag(line);
+            if(otag != ctag){
+                overAllTabs -= ctag;
             }
-            for(int i=0; i<overAllTabs; i++){
+            for(int i=0; i<overAllTabs-rank; i++){
                 bw.write("   ");
             }
             bw.write(line);
             bw.newLine();
-            if(isContainClosedTag(line) != isContainOpenTag(line)){
-                overAllTabs += isContainOpenTag(line);
+            if(otag != ctag){
+                overAllTabs += otag;
             }
         }
         sc.close();
         bw.close();
-}
-    public int isContainOpenTag(String line){
+    }
+    
+    public int countOpenTag(String line){
         int oCount;
         Pattern openTagPattern = Pattern.compile("<[a-zA-Z_]*>");
         Matcher openTagMatcher = openTagPattern.matcher(line);
         oCount =(int) openTagMatcher.results().count();
-        //System.out.println(oCount);
         return oCount;
     }
-    public int isContainClosedTag(String line){
+    
+    public int countClosedTag(String line){
         int cCount;
         Pattern closedTagPattern = Pattern.compile("<\\/[a-zA-Z_]*>");
         Matcher closedTagMatcher = closedTagPattern.matcher(line);
         cCount =(int) closedTagMatcher.results().count();
-        System.out.println(cCount);
         return cCount;
     }
     
+    /* assert wellformed xml
+    return 0 if this line contain root element (Ex: users)
+    return 1 if it is child (Ex: user)
+    return 2 if it is grandchild (Ex: likes, followers, posts)
+    return 3 if it is data of childs (Ex: number of likes, specific post)
+    */
+    public int lineRank(String line){
+        int counter;
+        Pattern spaceTagPattern = Pattern.compile("(?:[ ]{3})");
+        Matcher spaceTagMatcher = spaceTagPattern.matcher(line);
+        counter = (int) spaceTagMatcher.results().count();
+        return counter;
+    }
+    
     public static void main(String[] args) throws IOException {
-            // TODO code application logic here
             Project pj = new Project();
             pj.Tzbet("Sample1.xml");
     }
