@@ -6,42 +6,58 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Stack;
 
 public class Project {
 
-    void Tzbet(String inPath) throws FileNotFoundException, IOException{
+    void Prettifying(String inPath) throws FileNotFoundException, IOException{
         Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath); //get currrentpath and then join
-        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut1.xml");
+        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");
+        
         File inXml = new File(inFullPath.toString());
         File outXml = new File(outFullPath.toString());
+        
         FileInputStream fis = new FileInputStream(inXml);
         FileOutputStream fos = new FileOutputStream(outXml);
+        
         Scanner sc = new Scanner(fis);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+        
         String line;
-        int overAllTabs=0, rank, otag, ctag;
+        int nextLineRank=0, currentRank=0, openTags, closeTags, allTags;
+        Stack<Integer> rankStack = new Stack<>();
+        rankStack.push(nextLineRank);
         while(sc.hasNextLine()){
+            currentRank = rankStack.pop();
             line = sc.nextLine();
-            rank = lineRank(line);
-            otag = countOpenTag(line);
-            ctag = countClosedTag(line);
-            if(otag != ctag){
-                overAllTabs -= ctag;
+            openTags = countOpenTags(line);
+            closeTags = countClosedTags(line);
+            if(openTags == closeTags){
+                /*
+                if(openTags == 0){
+                    //handle data case
+                }
+                */
+                for(int i=0; i<currentRank-lineRank(line); i++){
+                    bw.write("   ");
+                }
             }
-            for(int i=0; i<overAllTabs-rank; i++){
-                bw.write("   ");
+            else{
+                for(int i=0; i<currentRank-closeTags-lineRank(line); i++){
+                    bw.write("   ");
+                }
             }
             bw.write(line);
             bw.newLine();
-            if(otag != ctag){
-                overAllTabs += otag;
-            }
+            allTags = openTags - closeTags;
+            nextLineRank = currentRank + allTags;
+            rankStack.push(nextLineRank);
         }
         sc.close();
         bw.close();
     }
     
-    public int countOpenTag(String line){
+    public int countOpenTags(String line){
         int oCount;
         Pattern openTagPattern = Pattern.compile("<[a-zA-Z_]*>");
         Matcher openTagMatcher = openTagPattern.matcher(line);
@@ -49,7 +65,7 @@ public class Project {
         return oCount;
     }
     
-    public int countClosedTag(String line){
+    public int countClosedTags(String line){
         int cCount;
         Pattern closedTagPattern = Pattern.compile("<\\/[a-zA-Z_]*>");
         Matcher closedTagMatcher = closedTagPattern.matcher(line);
@@ -57,23 +73,22 @@ public class Project {
         return cCount;
     }
     
-    /* assert wellformed xml
-    return 0 if this line contain root element (Ex: users)
-    return 1 if it is child (Ex: user)
-    return 2 if it is grandchild (Ex: likes, followers, posts)
-    return 3 if it is data of childs (Ex: number of likes, specific post)
-    */
     public int lineRank(String line){
         int counter;
         Pattern spaceTagPattern = Pattern.compile("(?:[ ]{3})");
         Matcher spaceTagMatcher = spaceTagPattern.matcher(line);
         counter = (int) spaceTagMatcher.results().count();
         return counter;
+            /* assert (wellformed xml)
+            return 0 if this line contain root element (Ex: users)
+            return 1 if it is child (Ex: user)
+            return 2 if it is grandchild (Ex: likes, followers, posts)
+            return 3 if it is data of childs (Ex: number of likes, specific post)
+            */
     }
     
     public static void main(String[] args) throws IOException {
             Project pj = new Project();
-            pj.Tzbet("Sample1.xml");
+            pj.Prettifying("Sample2.xml");
     }
-    
 }
