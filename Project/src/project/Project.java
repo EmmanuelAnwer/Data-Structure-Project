@@ -3,6 +3,8 @@ package project;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +12,7 @@ import java.util.Stack;
 
 public class Project {
 
-    void Prettifying(String inPath) throws FileNotFoundException, IOException{
+    public void Prettifying(String inPath) throws FileNotFoundException, IOException{
         Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath); //get currrentpath and then join
         Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");
         
@@ -29,7 +31,7 @@ public class Project {
         rankStack.push(nextLineRank);
         while(sc.hasNextLine()){
             currentRank = rankStack.pop();
-            line = sc.nextLine();
+            line = sc.nextLine().strip();
             openTags = countOpenTags(line);
             closeTags = countClosedTags(line);
             if(openTags == closeTags){
@@ -39,12 +41,12 @@ public class Project {
                 }
                 */
                 for(int i=0; i<currentRank-lineRank(line); i++){
-                    bw.write("   ");
+                    bw.write("    ");
                 }
             }
             else{
                 for(int i=0; i<currentRank-closeTags-lineRank(line); i++){
-                    bw.write("   ");
+                    bw.write("    ");
                 }
             }
             bw.write(line);
@@ -57,7 +59,7 @@ public class Project {
         bw.close();
     }
     
-    public int countOpenTags(String line){
+    private int countOpenTags(String line){
         int oCount;
         Pattern openTagPattern = Pattern.compile("<[a-zA-Z_]*>");
         Matcher openTagMatcher = openTagPattern.matcher(line);
@@ -65,15 +67,15 @@ public class Project {
         return oCount;
     }
     
-    public int countClosedTags(String line){
+    private int countClosedTags(String line){
         int cCount;
-        Pattern closedTagPattern = Pattern.compile("<\\/[a-zA-Z_]*>");
-        Matcher closedTagMatcher = closedTagPattern.matcher(line);
-        cCount =(int) closedTagMatcher.results().count();
+        Pattern closeTagPattern = Pattern.compile("<\\/[a-zA-Z_]*>");
+        Matcher closeTagMatcher = closeTagPattern.matcher(line);
+        cCount =(int) closeTagMatcher.results().count();
         return cCount;
     }
     
-    public int lineRank(String line){
+    private int lineRank(String line){
         int counter;
         Pattern spaceTagPattern = Pattern.compile("(?:[ ]{3})");
         Matcher spaceTagMatcher = spaceTagPattern.matcher(line);
@@ -87,8 +89,64 @@ public class Project {
             */
     }
     
+    public void validator(String inpath) throws FileNotFoundException{
+        Path inFullPath = Paths.get(System.getProperty("user.dir"), inpath);
+        File inXml = new File(inFullPath.toString());
+        FileInputStream fis = new FileInputStream(inXml);
+        Scanner sc = new Scanner(fis);
+        String line;
+        Stack<String> tagsStack = new Stack<>();
+        ArrayList<String> tagsList = null;
+        Iterator<String> iter = null;
+        int lineTracer=0;
+        while(sc.hasNextLine()){
+            lineTracer++;
+            line = sc.nextLine().strip();
+            tagsList = tagsName(line);
+            iter = tagsList.iterator();
+            while(iter.hasNext()){
+                line = iter.next();
+                if(!(line.substring(0,1).equals("/"))){
+                    //then it is an open tag
+                    tagsStack.push(line);   
+                }
+                else{
+                    //then it is a close tag
+                    if(line.substring(1).equals(tagsStack.peek())){
+                        tagsStack.pop();
+                    }
+                    else{
+                        //there is an error
+                        System.out.println("Error: Opening and ending tags mismatched "+line.substring(1)+" at line"+lineTracer+" and "+tagsStack.peek());
+                        while(tagsStack.isEmpty()==false){
+                            tagsStack.pop();
+                            if(tagsStack.peek().equals(line.substring(1))){
+                                tagsStack.pop();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public ArrayList tagsName(String line){
+        Pattern tagspPattern = Pattern.compile("<([^<>]*)>|<([^<>]*)>");
+        //Pattern p2 = Pattern.compile(">(.*)<|^[^<]*"); //for data
+        Matcher tagsMatcher = tagspPattern.matcher(line);
+        ArrayList<String> tags;
+        tags = new ArrayList<>(2);
+        while(tagsMatcher.find()){
+            for(int i=1; i<tagsMatcher.groupCount(); i++){
+                tags.add(tagsMatcher.group(i));
+            }
+        }    
+        return tags;
+    }
+    
     public static void main(String[] args) throws IOException {
             Project pj = new Project();
-            pj.Prettifying("Sample2.xml");
+            pj.validator("Sample2.xml");
     }
 }
