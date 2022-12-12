@@ -9,21 +9,14 @@ import java.util.regex.Pattern;
 
 public class Project {
     
-    public void Prettifying(String inPath) throws FileNotFoundException, IOException{
-        Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath); //get currrentpath and then join
-        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");
-        
-        File inXml = new File(inFullPath.toString());
+    public void Prettifying(String inPath) throws IOException{
+        Scanner sc = xmlScanner(inPath);
+        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");//get currrentpath and then join
         File outXml = new File(outFullPath.toString());
-        
-        FileInputStream fis = new FileInputStream(inXml);
         FileOutputStream fos = new FileOutputStream(outXml);
-        
-        Scanner sc = new Scanner(fis);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-        
         String line;
-        int nextLineRank=0, currentRank=0, openTags, closeTags, allTags;
+        int nextLineRank=0, currentRank, openTags, closeTags, allTags;
         Stack<Integer> rankStack = new Stack<>();
         rankStack.push(nextLineRank);
         while(sc.hasNextLine()){
@@ -37,14 +30,12 @@ public class Project {
                     //handle data case
                 }
                 */
-                for(int i=0; i<currentRank-lineRank(line); i++){
+                for(int i=0; i<currentRank-lineRank(line); i++)
                     bw.write("    ");
-                }
             }
             else{
-                for(int i=0; i<currentRank-closeTags-lineRank(line); i++){
+                for(int i=0; i<currentRank-closeTags-lineRank(line); i++)
                     bw.write("    ");
-                }
             }
             bw.write(line);
             bw.newLine();
@@ -78,7 +69,7 @@ public class Project {
         Matcher spaceTagMatcher = spaceTagPattern.matcher(line);
         counter = (int) spaceTagMatcher.results().count();
         return counter;
-            /* assert (wellformed xml)
+            /* assert (valid xml)
             return 0 if this line contain root element (Ex: users)
             return 1 if it is child (Ex: user)
             return 2 if it is grandchild (Ex: likes, followers, posts)
@@ -86,11 +77,16 @@ public class Project {
             */
     }
     
-    public void validator(String inpath) throws FileNotFoundException{
-        Path inFullPath = Paths.get(System.getProperty("user.dir"), inpath);
+    Scanner xmlScanner(String inPath) throws FileNotFoundException{
+        Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath);
         File inXml = new File(inFullPath.toString());
         FileInputStream fis = new FileInputStream(inXml);
         Scanner sc = new Scanner(fis);
+        return sc;
+    }
+    
+    public void validator(String inpath) throws FileNotFoundException{
+        Scanner sc = xmlScanner(inpath);
         String line;
         Stack<String> tagsStack = new Stack<>();
         ArrayList<String> tagsList;
@@ -117,15 +113,18 @@ public class Project {
                         System.out.println("Error: Opening and ending tags mismatched "+line.substring(1)+" at line"+lineTracer+" and "+tagsStack.peek());
                         while(tagsStack.isEmpty()==false){
                             tagsStack.pop();
-                            if(tagsStack.peek().equals(line.substring(1))){
-                                tagsStack.pop();
-                                break;
+                            if(tagsStack.isEmpty()==false){
+                                if(tagsStack.peek().equals(line.substring(1))){
+                                    tagsStack.pop();
+                                    break;
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        sc.close();
     }
     
     public ArrayList tagsName(String line){
