@@ -6,6 +6,6 @@ public class DSProject {
 
     public static void main(String[] args) throws IOException {
             Project pj = new Project();
-            pj.Prettifying("Sample2.xml");
+            pj.validator("Sample2.xml");
     }
 }

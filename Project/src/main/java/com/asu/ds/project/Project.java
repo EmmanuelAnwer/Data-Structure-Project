@@ -87,44 +87,38 @@ public class Project {
     
     public void validator(String inpath) throws FileNotFoundException{
         Scanner sc = xmlScanner(inpath);
-        String line;
+        String line,tag;
         Stack<String> tagsStack = new Stack<>();
         ArrayList<String> tagsList;
-        Iterator<String> iter;
         int lineTracer=0;
+        boolean goodFlag = true;
         while(sc.hasNextLine()){
-            lineTracer++;
             line = sc.nextLine().strip();
+            lineTracer++;
             tagsList = tagsName(line);
-            iter = tagsList.iterator();
-            while(iter.hasNext()){
-                line = iter.next();
-                if(!(line.substring(0,1).equals("/"))){
-                    //then it is an open tag
-                    tagsStack.push(line);   
-                }
-                else{
-                    //then it is a close tag
-                    if(line.substring(1).equals(tagsStack.peek())){
+            for (int i=0; i<tagsList.size(); i++){
+                tag = tagsList.get(i);
+                if(!(tag.substring(0,1).equals("/")))//case it is openTag
+                    tagsStack.push(tag);
+                else{ //case it is closeTag
+                    if(tag.substring(1).equals(tagsStack.peek()))
                         tagsStack.pop();
-                    }
-                    else{
-                        //there is an error
-                        System.out.println("Error: Opening and ending tags mismatched "+line.substring(1)+" at line"+lineTracer+" and "+tagsStack.peek());
-                        while(tagsStack.isEmpty()==false){
-                            tagsStack.pop();
-                            if(tagsStack.isEmpty()==false){
-                                if(tagsStack.peek().equals(line.substring(1))){
-                                    tagsStack.pop();
-                                    break;
-                                }
-                            }
-                        }
+                    else{ //handle case 4 ("delete random closeTags")
+                        goodFlag = false;
+                        System.out.println("Error: closeTag "+tag.substring(1)+" at line "+lineTracer+" and openTag "+tagsStack.peek()+" mismatched");
+                        tagsStack.pop();
+                        i--;
                     }
                 }
             }
         }
         sc.close();
+        if(tagsStack.empty() && goodFlag) //handle case 1 ("normal case no errors")
+            System.out.println("Good Xml (2BST Y3M :D)");
+        else{// handle case 5 ("delete the lasts tags")
+            while(!tagsStack.empty())
+            System.out.println("append </"+ tagsStack.pop()+"> to your xml");
+        }
     }
     
     public ArrayList tagsName(String line){
@@ -139,10 +133,5 @@ public class Project {
             }
         }    
         return tags;
-    }
-    
-    public static void main(String[] args) throws IOException {
-            Project pj = new Project();
-            pj.validator("Sample2.xml");
     }
 }
