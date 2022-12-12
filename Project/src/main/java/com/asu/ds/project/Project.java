@@ -1,17 +1,14 @@
-package project;
+package com.asu.ds.project;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Stack;
 
 public class Project {
-
+    
     public void Prettifying(String inPath) throws FileNotFoundException, IOException{
         Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath); //get currrentpath and then join
         Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");
@@ -96,8 +93,8 @@ public class Project {
         Scanner sc = new Scanner(fis);
         String line;
         Stack<String> tagsStack = new Stack<>();
-        ArrayList<String> tagsList = null;
-        Iterator<String> iter = null;
+        ArrayList<String> tagsList;
+        Iterator<String> iter;
         int lineTracer=0;
         while(sc.hasNextLine()){
             lineTracer++;
