@@ -29,16 +29,13 @@ public class XMLStringFromPath {
     
     
     
-    String getXMLString(String[] args) throws IOException{
+    BufferedReader getXMLString(String[] args) throws IOException{
         try{
             XMLPathInputGUI xmlPathInputGUI = new XMLPathInputGUI();
             xmlPathInputGUI.XMLPreviwer(args);
             BufferedReader br=new BufferedReader(new FileReader(path));
-            String line;
-            while((line=br.readLine()) != null){
-                xmlString += line + "\n";
-            }
-            return xmlString;
+            
+            return br;
         }
         catch (FileNotFoundException ex) {
             return getXMLString(args);
