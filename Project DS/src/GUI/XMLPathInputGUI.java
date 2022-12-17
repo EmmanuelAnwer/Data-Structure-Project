@@ -8,7 +8,7 @@ package GUI;
  *
  * @author user
  */
-import com.asu.ds.project.XMLStringFromPath;
+import xmlfile_operations.XMLStringFromPath;
 import java.io.File;
 import javafx.application.Application;
 import static javafx.application.Application.launch;

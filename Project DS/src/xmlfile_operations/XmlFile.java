@@ -1,4 +1,4 @@
-package com.asu.ds.project;
+package xmlfile_operations;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -7,10 +7,23 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Project {
-    
-    public void Prettifying(String inPath) throws IOException{
-        Scanner sc = xmlScanner(inPath);
+public class XmlFile {
+    private static String fullPath;
+
+    XmlFile(String path){XmlFile.fullPath = path;}
+
+    void setPath(String path){fullPath = path;}
+
+    String getPath(){return fullPath;}
+
+    static Scanner xmlScanner() throws IOException{ // returns scanner for xml
+        FileInputStream fis = new FileInputStream(new File(XmlFile.fullPath));
+        Scanner sc = new Scanner(fis);
+        return sc;
+    }
+
+    public void prettifying() throws IOException {
+        Scanner sc = XmlFile.xmlScanner();
         Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");//get currrentpath and then join
         File outXml = new File(outFullPath.toString());
         FileOutputStream fos = new FileOutputStream(outXml);
@@ -47,7 +60,7 @@ public class Project {
         bw.close();
     }
     
-    private int countOpenTags(String line){
+    int countOpenTags(String line){
         int oCount;
         Pattern openTagPattern = Pattern.compile("<[a-zA-Z_]*>");
         Matcher openTagMatcher = openTagPattern.matcher(line);
@@ -55,7 +68,7 @@ public class Project {
         return oCount;
     }
     
-    private int countClosedTags(String line){
+     int countClosedTags(String line){
         int cCount;
         Pattern closeTagPattern = Pattern.compile("<\\/[a-zA-Z_]*>");
         Matcher closeTagMatcher = closeTagPattern.matcher(line);
@@ -63,7 +76,7 @@ public class Project {
         return cCount;
     }
     
-    private int lineRank(String line){
+     int lineRank(String line){
         int counter;
         Pattern spaceTagPattern = Pattern.compile("(?:[ ]{3})");
         Matcher spaceTagMatcher = spaceTagPattern.matcher(line);
@@ -76,55 +89,68 @@ public class Project {
             return 3 if it is data of childs (Ex: number of likes, specific post)
             */
     }
-    
-    Scanner xmlScanner(String inPath) throws FileNotFoundException{
-        Path inFullPath = Paths.get(System.getProperty("user.dir"), inPath);
-        File inXml = new File(inFullPath.toString());
-        FileInputStream fis = new FileInputStream(inXml);
-        Scanner sc = new Scanner(fis);
-        return sc;
-    }
-    
-    public void validator(String inpath) throws FileNotFoundException{
-        Scanner sc = xmlScanner(inpath);
-        String line,tag;
+
+        public void validator() throws IOException{
+        Scanner sc = XmlFile.xmlScanner();
+        String line,tag,errorslog="";
         Stack<String> tagsStack = new Stack<>();
+        Stack<String> spareStack = new Stack<>();
         ArrayList<String> tagsList;
         int lineTracer=0;
-        boolean goodFlag = true;
+        boolean goodXml = true;
         while(sc.hasNextLine()){
             line = sc.nextLine().strip();
             lineTracer++;
             tagsList = tagsName(line);
             for (int i=0; i<tagsList.size(); i++){
                 tag = tagsList.get(i);
-                if(!(tag.substring(0,1).equals("/")))//case it is openTag
+
+                //case it is openTag
+                if(!(tag.substring(0,1).equals("/"))) {
                     tagsStack.push(tag);
-                else{ //case it is closeTag
-                    if(tag.substring(1).equals(tagsStack.peek()))
-                        tagsStack.pop();
-                    else{ //handle case 4 ("delete random closeTags")
-                        goodFlag = false;
-                        System.out.println("Error: closeTag "+tag.substring(1)+" at line "+lineTracer+" and openTag "+tagsStack.peek()+" mismatched");
-                        tagsStack.pop();
-                        i--;
+                }
+                //case it is closeTag
+                else{
+                    //closeTag has no openTag
+                    if (tagsStack.empty()) {
+                        errorslog = "";
+                        errorslog += "Line: " + lineTracer + ": the tag " + tag.substring(1) + " has no opening tag!\n";
+                        goodXml = false;
+                        //System.out.println("Line: " + lineTracer + ": the tag " + tag.substring(1) + " has no opening tag!");
+                        while(!spareStack.empty()){
+                            tagsStack.push(spareStack.pop());
+                        }
+                    }
+                    else{
+                        //closeTag it's openTag found
+                        if(tag.substring(1).equals(tagsStack.peek())) {
+                            tagsStack.pop();
+                        }
+                        else{ //handle case 4 ("deleted random closeTags")
+                            goodXml = false;
+                            errorslog += "Line: " + lineTracer + ": closeTag " + tag.substring(1) + " and openTag " + tagsStack.peek() + " mismatched!\n";
+                                //System.out.println("Line: " + lineTracer + ": closeTag " + tag.substring(1) + " and openTag " + tagsStack.peek() + " mismatched!");
+                            spareStack.push(tagsStack.pop());
+                            i--;
+                        }
                     }
                 }
             }
         }
         sc.close();
-        if(tagsStack.empty() && goodFlag) //handle case 1 ("normal case no errors")
+        if(tagsStack.empty() && goodXml) //handle case 1 ("normal case no errors")
             System.out.println("Good Xml (2BST Y3M :D)");
         else{// handle case 5 ("delete the lasts tags")
             while(!tagsStack.empty())
-            System.out.println("append </"+ tagsStack.pop()+"> to your xml");
+            System.out.println("Line: " + lineTracer + ": the tag " + tagsStack.pop() + " has no closeTag!");
         }
+        System.out.println(errorslog);
     }
     
     public ArrayList tagsName(String line){
-        Pattern tagspPattern = Pattern.compile("<([^<>]*)>|<([^<>]*)>");
+        Pattern tagsPattern = Pattern.compile("<([^<>]*)>|<([^<>]*)>");
         //Pattern p2 = Pattern.compile(">(.*)<|^[^<]*"); //for data
-        Matcher tagsMatcher = tagspPattern.matcher(line);
+        Matcher tagsMatcher = tagsPattern.matcher(line);
         ArrayList<String> tags;
         tags = new ArrayList<>(2);
         while(tagsMatcher.find()){

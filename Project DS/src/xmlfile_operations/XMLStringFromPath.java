@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.asu.ds.project;
+package xmlfile_operations;
 
 import GUI.XMLPathInputGUI;
 import java.io.BufferedReader;
@@ -26,10 +22,10 @@ public class XMLStringFromPath {
     public static void setPath(String path) {
         XMLStringFromPath.path = path;
     }
-    
-    
-    
-    BufferedReader getXMLString(String[] args) throws IOException{
+
+
+
+    static BufferedReader getXMLString(String[] args) throws IOException{
         try{
             XMLPathInputGUI xmlPathInputGUI = new XMLPathInputGUI();
             xmlPathInputGUI.XMLPreviwer(args);
