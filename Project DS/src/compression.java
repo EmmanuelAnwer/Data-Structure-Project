@@ -12,10 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
-import static projectds.Minify.Minify;
-import static projectds.Minify.compressBArray;
-import static projectds.Minify.decompress;
-
 /**
  *
  * @author HP
