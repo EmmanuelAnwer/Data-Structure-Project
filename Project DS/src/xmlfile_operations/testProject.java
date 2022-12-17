@@ -9,8 +9,8 @@ public class testProject {
         //XMLStringFromPath xmlStringFromPath = new XMLStringFromPath();
         //BufferedReader xmlString = xmlStringFromPath.getXMLString(args);
         //System.out.println(xmlString);
-        XmlFile x = new XmlFile("D:\\My-Github\\Project\\indentedOut1.xml");
-        x.validator();
+        XmlFile x = new XmlFile("D:\\My-Github\\Project\\Sample1.xml");
+
 //        Project pj = new Project();
 //        pj.validator("Sample2.xml");
     }
