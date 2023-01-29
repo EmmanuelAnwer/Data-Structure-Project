@@ -32,7 +32,6 @@ public class Tree {
     public TreeNode getRoot() {
         return root;
     }  
-<<<<<<< HEAD
     
     public String toJson() {
         return root.toJson();
@@ -68,42 +67,6 @@ public class Tree {
 //        return JSONified;
 //}
     
-=======
-    /**
-    *
-    * @author Martina
-    */
-    String toJson(Tree xmlTree) {
-        TreeNode lastNode;
-        boolean last = false;
-
-        // first node (root)
-        JSONified += "{\n";
-        JSONified += "\t\"" + xmlTree.getRoot().getTag() + "\": {\n";
-
-        if (xmlTree.getRoot().getValue().compareTo("") != 0) {
-            JSONified += "\"" + xmlTree.getRoot().getValue() + "\"";
-        }
-
-        for (int i = 0; i < xmlTree.getRoot().getChildren().size(); i++) {
-            // Making last node is the parent for the first ,dd else the lastest brother
-            if (i == 0) {
-                lastNode = xmlTree.getRoot();
-            } else {
-                lastNode = xmlTree.getRoot().getChildren().get(i - 1);
-            }
-            // flag the last node for ","
-            if (i == xmlTree.getRoot().getChildren().size() - 1) {
-                last = true;
-            }
-            JSONify_traversal(xmlTree.getRoot().getChildren().get(i), lastNode, last, i);
-        }
-       
-        JSONified += "\t}\n";
-        JSONified += "\n}";
-        return JSONified;
-    }
->>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
     public void JSONify_traversal(TreeNode node, TreeNode lastNode, boolean last, int order) {
         boolean square = false;
 

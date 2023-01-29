@@ -12,11 +12,7 @@ public class XmlFile {
     private ArrayList<String> xmlList;
 
 
-<<<<<<< HEAD
     public XmlFile(String path) throws IOException {
-=======
-    XmlFile(String path) throws IOException {
->>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
         XmlFile.fullPath = path;
         xmlList = xmlToList();
     }
@@ -37,15 +33,9 @@ public class XmlFile {
     }
 
 
-<<<<<<< HEAD
     String tagType(String tagString){
         if(tagString.substring(0,1).equals("<")){
             if(tagString.substring(1,2).equals("/")){
-=======
-    String tagType(String xxx){
-        if(xxx.substring(0,1).equals("<")){
-            if(xxx.substring(1,2).equals("/")){
->>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
                 return "closeTag";
             }
             else{
@@ -166,8 +156,6 @@ public class XmlFile {
         ArrayList<String> newXml = new ArrayList<>();
         //int lineTracer=0;
         boolean goodXml = true;
-<<<<<<< HEAD
-=======
 
 
             for (int i = 0; i < xmlList.size(); i++){
@@ -198,50 +186,6 @@ public class XmlFile {
                         break;
                 }
         }
-            /*for (int i=0; i<tagsList.size(); i++){
-                tag = tagsList.get(i);
->>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
-
-
-            for (int i = 0; i < xmlList.size(); i++){
-                tag = xmlList.get(i);
-                //System.out.println(tag);
-                switch (tagType(tag)){
-                    case "openTag":
-                        tagsStack.push(tag);
-                        newXml.add(tag);
-                        break;
-                    case "closeTag":
-
-                        break;
-                    case "data":
-                        if(tagType(xmlList.get(i-1))=="openTag" && tagType(xmlList.get(i+1))=="closeTag"){
-                            newXml.add(tag);
-                        }
-                        if(tagType(xmlList.get(i-1))!="openTag" && tagType(xmlList.get(i+1))=="closeTag"){
-                            s = xmlList.get(i-1);
-                            newXml.add(symbolRemover(s));
-                            newXml.add(tag);
-                        }
-                        if(tagType(xmlList.get(i-1))=="openTag" && tagType(xmlList.get(i+1))!="closeTag"){
-                            s = xmlList.get(i+1);
-                            newXml.add(tag);
-                            newXml.add(symbolRemover(s));
-                        }
-                        break;
-                }
-        }
-<<<<<<< HEAD
-=======
-        sc.close();
-        if(tagsStack.empty() && goodXml) //handle case 1 ("normal case no errors")
-            System.out.println("Good Xml (2BST Y3M :D)");
-        else{// handle case 5 ("delete the lasts tags")
-            while(!tagsStack.empty())
-            System.out.println("Line: " + lineTracer + ": the tag " + tagsStack.pop() + " has no closeTag!");
-        }
-        System.out.println(errorslog);*/
->>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
     }
 
 
