@@ -1,8 +1,3 @@
-
-/**
- *
- * @author Youssef
- */
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -11,18 +6,20 @@ package xmlfile_operations;
 
 import XMLTreePackage.Tree;
 import XMLTreePackage.TreeNode;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  *
  * @author user
  */
-public class TreeMaker {
-    private final ArrayList<String> br;
+public class TreeMaker2 {
+    private BufferedReader br;
     private Tree tree;
     
-    public TreeMaker(ArrayList<String> br){
+    public TreeMaker2(BufferedReader br){
         this.br = br;
     }
 
@@ -30,15 +27,46 @@ public class TreeMaker {
         return tree;
     }
     
-
+//    public BufferedReader noSpaces(BufferedReader br){
+//        String xmlString = "";
+//        
+//        String line;
+//        while((line = br.readLine()) != null){
+//            if(isClosedTag(line)){
+//                String newLine = symbolRemover(line);
+//                if(!isClosedTag(newLine)){
+//                    xmlString += line + "\n";
+//                }else{
+//                    String fixedLine = "";
+//                    boolean openTagPassed = false;
+//                    for(int i = 0; i < line.length(); i++){
+//                        if(line.charAt(i) == '>'){
+//                            fixedLine += '>' + "\n";
+//                        }
+//                        else if(line.charAt(i) == '<'){
+//                            if(openTagPassed){
+//                                fixedLine += "\n" + '<';
+//                            }
+//                        }
+//                        else{
+//                            fixedLine += line.charAt(i);
+//                        }
+//                    }
+//                }
+//            }  
+//        }
+//        
+//        return newBr
+//    } 
     
     public Tree treeCreator() throws IOException{
+        String line;
         TreeNode currentNode = null;
         
         
         //TODO Add \n function to fix ID problem
         // Iterate on all lines
-        for(String line : br){
+        while((line = br.readLine()) != null){
             // Open Tag Case
             if(isOpenTag(line)){
                 String tagName = this.symbolRemover(line);
@@ -51,12 +79,6 @@ public class TreeMaker {
                     );
                     currentNode.setParent(parentNode);
                     currentNode.add_node();
-                    if(parentNode.getChildren().size() > 1){
-                        // Check the first two children are the same tag
-                        if(parentNode.getChildren().get(0).getTag().equals(parentNode.getChildren().get(1).getTag())){
-                            parentNode.setSimilar(true);
-                        }
-                    }
                 }
                 // root case
                 else{

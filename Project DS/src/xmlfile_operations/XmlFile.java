@@ -9,155 +9,184 @@ import java.util.regex.Pattern;
 
 public class XmlFile {
     private static String fullPath;
+    private ArrayList<String> xmlList;
 
-    XmlFile(String path){XmlFile.fullPath = path;}
 
-    void setPath(String path){fullPath = path;}
+    public XmlFile(String path) throws IOException {
+        XmlFile.fullPath = path;
+        xmlList = xmlToList();
+    }
 
-    String getPath(){return fullPath;}
 
-    static Scanner xmlScanner() throws IOException{ // returns scanner for xml
+    void setPath(String path){
+        fullPath = path;
+    }
+
+
+    String getPath(){
+        return fullPath;
+    }
+
+
+    ArrayList<String>getXmlList(){
+        return (ArrayList<String>) xmlList.clone();
+    }
+
+
+    String tagType(String tagString){
+        if(tagString.substring(0,1).equals("<")){
+            if(tagString.substring(1,2).equals("/")){
+                return "closeTag";
+            }
+            else{
+                return "openTag";
+            }
+        }
+        else{
+            return "data";
+        }
+    }
+
+
+    private ArrayList<String> xmlToList() throws IOException {
+        Scanner sc = XmlFile.xmlScanner();
+        ArrayList<String> tagsList,listOfData = new ArrayList<>();
+        String line;
+        while(sc.hasNextLine()) {
+            line = sc.nextLine().strip();
+            tagsList = tagsName(line);
+
+            for (int i = 0; i < tagsList.size()-1; i++) {
+                listOfData.add(tagsList.get(i));
+            }
+        }
+        return listOfData;
+    }
+
+
+    private static Scanner xmlScanner() throws IOException{
         FileInputStream fis = new FileInputStream(new File(XmlFile.fullPath));
         Scanner sc = new Scanner(fis);
         return sc;
     }
 
-    public void prettifying() throws IOException {
-        Scanner sc = XmlFile.xmlScanner();
-        Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");//get currrentpath and then join
-        File outXml = new File(outFullPath.toString());
-        FileOutputStream fos = new FileOutputStream(outXml);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-        String line;
-        int nextLineRank=0, currentRank, openTags, closeTags, allTags;
-        Stack<Integer> rankStack = new Stack<>();
-        rankStack.push(nextLineRank);
-        while(sc.hasNextLine()){
-            currentRank = rankStack.pop();
-            line = sc.nextLine().strip();
-            openTags = countOpenTags(line);
-            closeTags = countClosedTags(line);
-            if(openTags == closeTags){
-                /*
-                if(openTags == 0){
-                    //handle data case
-                }
-                */
-                for(int i=0; i<currentRank-lineRank(line); i++)
-                    bw.write("    ");
-            }
-            else{
-                for(int i=0; i<currentRank-closeTags-lineRank(line); i++)
-                    bw.write("    ");
-            }
-            bw.write(line);
-            bw.newLine();
-            allTags = openTags - closeTags;
-            nextLineRank = currentRank + allTags;
-            rankStack.push(nextLineRank);
-        }
-        sc.close();
-        bw.close();
-    }
-    
-    int countOpenTags(String line){
-        int oCount;
-        Pattern openTagPattern = Pattern.compile("<[a-zA-Z_]*>");
-        Matcher openTagMatcher = openTagPattern.matcher(line);
-        oCount =(int) openTagMatcher.results().count();
-        return oCount;
-    }
-    
-     int countClosedTags(String line){
-        int cCount;
-        Pattern closeTagPattern = Pattern.compile("<\\/[a-zA-Z_]*>");
-        Matcher closeTagMatcher = closeTagPattern.matcher(line);
-        cCount =(int) closeTagMatcher.results().count();
-        return cCount;
-    }
-    
-     int lineRank(String line){
-        int counter;
-        Pattern spaceTagPattern = Pattern.compile("(?:[ ]{3})");
-        Matcher spaceTagMatcher = spaceTagPattern.matcher(line);
-        counter = (int) spaceTagMatcher.results().count();
-        return counter;
-            /* assert (valid xml)
-            return 0 if this line contain root element (Ex: users)
-            return 1 if it is child (Ex: user)
-            return 2 if it is grandchild (Ex: likes, followers, posts)
-            return 3 if it is data of childs (Ex: number of likes, specific post)
-            */
-    }
 
-        public void validator() throws IOException{
-        Scanner sc = XmlFile.xmlScanner();
-        String line,tag,errorslog="";
-        Stack<String> tagsStack = new Stack<>();
-        Stack<String> spareStack = new Stack<>();
-        ArrayList<String> tagsList;
-        int lineTracer=0;
-        boolean goodXml = true;
-        while(sc.hasNextLine()){
-            line = sc.nextLine().strip();
-            lineTracer++;
-            tagsList = tagsName(line);
-            for (int i=0; i<tagsList.size(); i++){
-                tag = tagsList.get(i);
-
-                //case it is openTag
-                if(!(tag.substring(0,1).equals("/"))) {
-                    tagsStack.push(tag);
-                }
-                //case it is closeTag
-                else{
-                    //closeTag has no openTag
-                    if (tagsStack.empty()) {
-                        errorslog = "";
-                        errorslog += "Line: " + lineTracer + ": the tag " + tag.substring(1) + " has no opening tag!\n";
-                        goodXml = false;
-                        //System.out.println("Line: " + lineTracer + ": the tag " + tag.substring(1) + " has no opening tag!");
-                        while(!spareStack.empty()){
-                            tagsStack.push(spareStack.pop());
-                        }
-                    }
-                    else{
-                        //closeTag it's openTag found
-                        if(tag.substring(1).equals(tagsStack.peek())) {
-                            tagsStack.pop();
-                        }
-                        else{ //handle case 4 ("deleted random closeTags")
-                            goodXml = false;
-                            errorslog += "Line: " + lineTracer + ": closeTag " + tag.substring(1) + " and openTag " + tagsStack.peek() + " mismatched!\n";
-                                //System.out.println("Line: " + lineTracer + ": closeTag " + tag.substring(1) + " and openTag " + tagsStack.peek() + " mismatched!");
-                            spareStack.push(tagsStack.pop());
-                            i--;
-                        }
-                    }
-                }
-            }
-        }
-        sc.close();
-        if(tagsStack.empty() && goodXml) //handle case 1 ("normal case no errors")
-            System.out.println("Good Xml (2BST Y3M :D)");
-        else{// handle case 5 ("delete the lasts tags")
-            while(!tagsStack.empty())
-            System.out.println("Line: " + lineTracer + ": the tag " + tagsStack.pop() + " has no closeTag!");
-        }
-        System.out.println(errorslog);
-    }
-    
-    public ArrayList tagsName(String line){
-        Pattern tagsPattern = Pattern.compile("<([^<>]*)>|<([^<>]*)>");
-        //Pattern p2 = Pattern.compile(">(.*)<|^[^<]*"); //for data
+    private ArrayList tagsName(String line){
+        Pattern tagsPattern = Pattern.compile("(?:(<[^<>]*>)|([^\\n<]*)|(<[^<>]*>))");
         Matcher tagsMatcher = tagsPattern.matcher(line);
-        ArrayList<String> tags;
-        tags = new ArrayList<>(2);
+        ArrayList<String> tags = new ArrayList<>();
         while(tagsMatcher.find()){
             for(int i=1; i<tagsMatcher.groupCount(); i++){
-                tags.add(tagsMatcher.group(i));
+                if(tagsMatcher.group(i)!=null)
+                    tags.add(tagsMatcher.group(i));
             }
-        }    
+        }
         return tags;
     }
+
+
+    public void printXml(){
+        for(String iter : xmlList) {
+            System.out.println(iter);
+        }
+    }
+
+
+    String symbolRemover(String str){
+        str = str.replaceAll("\s+","");
+        if(isOpenTag(str)){
+            return str.substring(1, str.length()-1);
+        }
+        else{
+            return str.substring(2, str.length()-1);
+        }
+    }
+
+
+    boolean isOpenTag(String str){
+        return str.contains("<") && str.contains(">") && !str.contains("/");
+    }
+
+
+    boolean isClosedTag(String str){
+        return str.contains("<") && str.contains(">") && str.contains("/");
+    }
+
+
+    public void prettifying() throws IOException {
+    Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");//get currrentpath and then join
+    File outXml = new File(outFullPath.toString());
+    FileOutputStream fos = new FileOutputStream(outXml);
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+    int currentRank=0, level=0;
+    String tag;
+
+    for (int i = 0; i < xmlList.size(); i++) {
+        tag = xmlList.get(i);
+
+        switch (tagType(tag)) {
+            case "openTag":
+                currentRank = level;
+                level++;
+                break;
+            case "closeTag":
+                level--;
+                currentRank = level;
+                break;
+            case "data":
+                currentRank = level;
+                break;
+        }
+        for (int j = 0; j < currentRank; j++)
+            bw.write("    ");
+
+        bw.write(tag+"\n");
+    }
+    bw.close();
+    System.out.println("And now your beautiful Xml at " + outFullPath);
+}
+
+
+    public void validator() throws IOException{
+
+        String line,tag,s;
+        Stack<String> tagsStack = new Stack<>();
+        //Stack<String> spareStack = new Stack<>();
+        ArrayList<String> newXml = new ArrayList<>();
+        //int lineTracer=0;
+        boolean goodXml = true;
+
+
+            for (int i = 0; i < xmlList.size(); i++){
+                tag = xmlList.get(i);
+                //System.out.println(tag);
+                switch (tagType(tag)){
+                    case "openTag":
+                        tagsStack.push(tag);
+                        newXml.add(tag);
+                        break;
+                    case "closeTag":
+
+                        break;
+                    case "data":
+                        if(tagType(xmlList.get(i-1))=="openTag" && tagType(xmlList.get(i+1))=="closeTag"){
+                            newXml.add(tag);
+                        }
+                        if(tagType(xmlList.get(i-1))!="openTag" && tagType(xmlList.get(i+1))=="closeTag"){
+                            s = xmlList.get(i-1);
+                            newXml.add(symbolRemover(s));
+                            newXml.add(tag);
+                        }
+                        if(tagType(xmlList.get(i-1))=="openTag" && tagType(xmlList.get(i+1))!="closeTag"){
+                            s = xmlList.get(i+1);
+                            newXml.add(tag);
+                            newXml.add(symbolRemover(s));
+                        }
+                        break;
+                }
+        }
+    }
+
+
 }

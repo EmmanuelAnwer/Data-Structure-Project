@@ -30,7 +30,11 @@ public class XMLPathInputGUI  extends Application{
     final private String XML_STAGE_TITLE = "XML path entry"; 
     final private double[] PRIMARY_STAGE_DIMENSIONS = {900, 125};
     private String path;
-    private Stage primaryStage;
+    static private Stage primaryStage;
+
+    public static void setPrimaryStageScene(Scene scene) {
+        XMLPathInputGUI.primaryStage.setScene(scene);
+    }
     private TextField textField;
 
     public String getPath() {
@@ -43,6 +47,7 @@ public class XMLPathInputGUI  extends Application{
         primaryStage.setHeight(PRIMARY_STAGE_DIMENSIONS[1]);
         primaryStage.setTitle(XML_STAGE_TITLE);
         primaryStage.setScene(this.XMLScene());
+        primaryStage.setResizable(false);
         this.primaryStage = primaryStage;
         primaryStage.show();
     }
@@ -131,7 +136,11 @@ public class XMLPathInputGUI  extends Application{
     private void onClickOkay(){
         if(this.path != null && this.path.matches(".*[a-z].*")){
             XMLStringFromPath.setPath(this.path);
-            primaryStage.close();
+            primaryStage.setScene(
+                new MainScreen().mainScene()
+            );
+            primaryStage.setWidth(500);
+            primaryStage.setHeight(400);
         }
     }
     

@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -25,13 +26,15 @@ public class XMLStringFromPath {
 
 
 
-    static BufferedReader getXMLString(String[] args) throws IOException{
+    static ArrayList<String> getXMLString(String[] args) throws IOException{
         try{
             XMLPathInputGUI xmlPathInputGUI = new XMLPathInputGUI();
             xmlPathInputGUI.XMLPreviwer(args);
-            BufferedReader br=new BufferedReader(new FileReader(path));
+            XmlFile xmlFile = new XmlFile(path);
+            return xmlFile.getXmlList();
+//            BufferedReader br=new BufferedReader(new FileReader(path));
             
-            return br;
+//            return br;
         }
         catch (FileNotFoundException ex) {
             return getXMLString(args);
