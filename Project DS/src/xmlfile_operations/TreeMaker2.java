@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+
+/**
+ *
+ * @author Youssef
+ */
+>>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -27,6 +35,7 @@ public class TreeMaker2 {
         return tree;
     }
     
+<<<<<<< HEAD
 //    public BufferedReader noSpaces(BufferedReader br){
 //        String xmlString = "";
 //        
@@ -58,6 +67,9 @@ public class TreeMaker2 {
 //        
 //        return newBr
 //    } 
+=======
+
+>>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
     
     public Tree treeCreator() throws IOException{
         String line;
@@ -122,4 +134,8 @@ public class TreeMaker2 {
             return str.substring(2, str.length()-1);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d

@@ -35,11 +35,19 @@ public class TreeNode {
     public TreeNode(String tag) {
         this.tag = tag;
     }
+<<<<<<< HEAD
     public void add_node() {       
         this.setDepth(this.parent.getDepth() + 1);  
         this.setParent(parent);
         this.parent.getChildren().add(this); 
     }
+=======
+public void add_node() {       
+    this.setDepth(this.parent.getDepth() + 1);  
+    this.setParent(parent);
+    this.parent.getChildren().add(this); 
+}
+>>>>>>> 2a5b7550098f7d6d49dd063dbc0dd2fb58ca722d
     public void get_brothers() {
         for (int i = 0; i < parent.children.size(); i++) {
             brothers.add(parent.children.get(i));
