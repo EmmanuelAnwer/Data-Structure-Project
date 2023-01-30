@@ -162,6 +162,7 @@ public class XmlFile {
         String line,tag,s;
         Stack<String> tagsStack = new Stack<>();
         ArrayList<String> newXml = new ArrayList<>();
+        ArrayList<String> compXml = new ArrayList<>();
         //boolean goodXml = true;
 
             for (int i = 0; i < xmlList.size(); i++){
@@ -172,22 +173,28 @@ public class XmlFile {
                         tagsStack.push(tag);
                         break;
                     case "closeTag":
-                        if(symbolRemover(tag).equals(symbolRemover(tagsStack.peek()))){
+                        if(tagsStack.empty()){
+                            newXml.add(xmlList.size()-i-1, toOpen(symbolRemover(tag)));
                             newXml.add(tag);
-                            tagsStack.pop();
                         }
-                        else{
-
+                        else {
+                            if (symbolRemover(tag).equals(symbolRemover(tagsStack.peek()))) {
+                                newXml.add(tag);
+                                tagsStack.pop();
+                            } else {
+                                //newXml.add(xmlList.size()-i-1, toOpen(symbolRemover(tag)));
+                                //newXml.add(tag);
+                            }
                         }
                         break;
                     case "data":
-                        if(symbolRemover(xmlList.get(i-1)).equals(symbolRemover(xmlList.get(i+1))) && tagType(xmlList.get(i-1))== "openTag"){
+                        if(symbolRemover(xmlList.get(i-1)).equals(symbolRemover(xmlList.get(i+1))) && tagType(xmlList.get(i-1)).equals("openTag")){
                             newXml.add(tag);
                             newXml.add(xmlList.get(i+1));
                             tagsStack.pop();
                             i++;
                         }
-                        else if (!(symbolRemover(xmlList.get(i-1)).equals(symbolRemover(xmlList.get(i+1)))) && tagType(xmlList.get(i+1))== "closeTag") {
+                        else if (!(symbolRemover(xmlList.get(i-1)).equals(symbolRemover(xmlList.get(i+1)))) && tagType(xmlList.get(i+1)).equals("closeTag")) {
                             newXml.add(toOpen(symbolRemover(xmlList.get(i+1))));
                             newXml.add(tag);
                             newXml.add(xmlList.get(i+1));
@@ -205,7 +212,22 @@ public class XmlFile {
             while(!tagsStack.empty()){
                 newXml.add(toClose(symbolRemover(tagsStack.pop())));
             }
-            this.xmlList = newXml;
+            //this.xmlList = newXml;
+        //compare
+
+        int offset = 0;
+            int maxOffset = newXml.size() - xmlList.size();
+        for(int i=0; i<newXml.size(); i++){
+            if(xmlList.get(i-offset).equals(newXml.get(i))){
+                compXml.add(i, newXml.get(i));
+                continue;
+            }
+            if(offset < maxOffset)
+                offset++;
+            compXml.add(i, newXml.get(i)+ "\t<--");
+        }
+
+        this.xmlList = compXml;
     }
     public static void main(String[] args) throws IOException {
         XmlFile xf = new XmlFile("D:\\My-Github\\Data-Structure-Project\\indentedOut2.xml");
