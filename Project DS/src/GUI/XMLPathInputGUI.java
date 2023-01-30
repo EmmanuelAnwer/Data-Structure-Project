@@ -29,16 +29,20 @@ import javax.swing.JFileChooser;
 public class XMLPathInputGUI  extends Application{
     final private String XML_STAGE_TITLE = "XML path entry"; 
     final private double[] PRIMARY_STAGE_DIMENSIONS = {900, 125};
-    private String path;
+    private static String path;
     static private Stage primaryStage;
+    private TextField textField;
 
+    
     public static void setPrimaryStageScene(Scene scene) {
         XMLPathInputGUI.primaryStage.setScene(scene);
     }
-    private TextField textField;
+    public static void close() {
+        XMLPathInputGUI.primaryStage.close();
+    }
 
-    public String getPath() {
-        return this.path;
+    public static String getPath() {
+        return XMLPathInputGUI.path;
     }
     
     @Override
@@ -51,6 +55,14 @@ public class XMLPathInputGUI  extends Application{
         this.primaryStage = primaryStage;
         primaryStage.show();
     }
+    public static void setPrimaryStageWidth(double width) {
+        XMLPathInputGUI.primaryStage.setWidth(width);
+    }
+    
+    public static void setPrimaryStageHeight(double height) {
+        XMLPathInputGUI.primaryStage.setHeight(height);
+    }
+    
     
     public void XMLPreviwer(String[] args){
         launch(args);
@@ -155,4 +167,5 @@ public class XMLPathInputGUI  extends Application{
     private void onTextChange(TextField textField){
         this.path = textField.getText();
     }
+
 }

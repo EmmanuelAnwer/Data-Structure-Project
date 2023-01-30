@@ -121,7 +121,7 @@ public class TreeNode {
     public String toJson(){
         if(this.value == ""){
             String result = "";
-            for(int i =0; i < this.depth+1; i++){
+            for(int i =0; i < this.depth+2; i++){
                 result += "\t";
             }
             result += this.tag + ": ";
@@ -133,7 +133,7 @@ public class TreeNode {
                 if(childrenIndex != this.children.size()-1) result += ",";
                 result += "\n";
             }
-            for(int i =0; i < this.depth+1; i++){
+            for(int i =0; i < this.depth+2; i++){
                 result += "\t";
             }
             if(this.similar == true) result += "]";
@@ -142,7 +142,7 @@ public class TreeNode {
         }         
         else{
             String valueString = "";
-            for(int i = 0; i < this.depth+1; i++){
+            for(int i = 0; i < this.depth+2; i++){
                 valueString += "\t";
             }
             valueString += this.tag + ": " + "\"" +this.value + "\"";

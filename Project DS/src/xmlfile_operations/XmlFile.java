@@ -28,7 +28,7 @@ public class XmlFile {
     }
 
 
-    ArrayList<String>getXmlList(){
+    public ArrayList<String>getXmlList(){
         return (ArrayList<String>) xmlList.clone();
     }
 
@@ -122,15 +122,13 @@ public class XmlFile {
         return s;
     }
 
-    public void prettifying() throws IOException {
-    Path outFullPath = Paths.get(System.getProperty("user.dir"), "indentedOut2.xml");//get currrentpath and then join
-    File outXml = new File(outFullPath.toString());
-    FileOutputStream fos = new FileOutputStream(outXml);
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-
+    public String prettifying(){
+        
     int currentRank=0, level=0;
     String tag;
 
+    String prettifiedXml = "";
+    
     for (int i = 0; i < xmlList.size(); i++) {
         tag = xmlList.get(i);
 
@@ -148,16 +146,13 @@ public class XmlFile {
                 break;
         }
         for (int j = 0; j < currentRank; j++)
-            bw.write('\t');
+            prettifiedXml += "    ";
 
-        bw.write(tag+"\n");
+        prettifiedXml += tag+"\n";
     }
-    bw.close();
-    System.out.println("And now your beautiful Xml at " + outFullPath);
+    return prettifiedXml;
 }
-
-
-    public void validator() throws IOException{
+    public String validator() throws IOException{
 
         String line,tag,s;
         Stack<String> tagsStack = new Stack<>();
@@ -228,6 +223,7 @@ public class XmlFile {
         }
 
         this.xmlList = compXml;
+        return this.prettifying();
     }
     public static void main(String[] args) throws IOException {
         XmlFile xf = new XmlFile("D:\\My-Github\\Data-Structure-Project\\indentedOut2.xml");

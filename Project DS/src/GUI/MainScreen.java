@@ -4,6 +4,15 @@
  */
 package GUI;
 
+import XMLTreePackage.Tree;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,6 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import xmlfile_operations.Compression;
+import xmlfile_operations.TreeMaker;
+import xmlfile_operations.XmlFile;
 
 /**
  *
@@ -50,7 +62,11 @@ public class MainScreen{
         correctButton.setOnAction(new EventHandler<ActionEvent>() { 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked");
+                try {
+                    onClickCorrect();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -64,19 +80,11 @@ public class MainScreen{
         minifiyButton.setOnAction(new EventHandler<ActionEvent>() { 
             @Override
             public void handle(ActionEvent event) {
-                XMLPathInputGUI.setPrimaryStageScene(new TextScreen("The look and feel of JavaFX applications "
-                + "can be customized. Cascading Style Sheets (CSS) separate "
-                + "appearance and style from implementation so that developers can "
-                + "concentrate on coding. Graphic designers can easily "
-                + "customize the appearance and style of the application "
-                + "through the CSS. If you have a web design background,"
-                + " or if you would like to separate the user interface (UI) "
-                + "and the back-end logic, then you can develop the presentation"
-                + " aspects of the UI in the FXML scripting language and use Java "
-                + "code for the application logic. If you prefer to design UIs "
-                + "without writing code, then use JavaFX Scene Builder. As you design the UI, "
-                + "Scene Builder creates FXML markup that can be ported to an Integrated Development "
-                + "Environment (IDE) so that developers can add the business logic.").textScreen());
+                try {
+                    onClickMinifiy();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });   
         
@@ -99,7 +107,11 @@ public class MainScreen{
         pretifyButton.setOnAction(new EventHandler<ActionEvent>() { 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked");
+                try {
+                    onClickPretify();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -113,7 +125,11 @@ public class MainScreen{
         toJsonButton.setOnAction(new EventHandler<ActionEvent>() { 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked");
+                try {
+                    onClickToJson();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });   
         
@@ -138,7 +154,11 @@ public class MainScreen{
         compressionButton.setOnAction(new EventHandler<ActionEvent>() { 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked");
+                try {
+                    onClickCompression();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -152,7 +172,11 @@ public class MainScreen{
         decompressionButton.setOnAction(new EventHandler<ActionEvent>() { 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked");
+                try {
+                    onClickDecompression();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });   
         
@@ -164,4 +188,65 @@ public class MainScreen{
         
         return hbox;
     }
+    
+    void onClickMinifiy() throws IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        
+        String path = XMLPathInputGUI.getPath();
+        String minifiedString = Compression.Minify(path);
+        
+        
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(minifiedString.getBytes(), "xml").textScreen());
+    }
+    
+    void onClickPretify() throws IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+
+        XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath());
+        String prettifiedString = xmlFile.prettifying();
+        
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(prettifiedString.getBytes(), "xml").textScreen());
+    }
+    
+    void onClickCompression() throws FileNotFoundException, IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        
+        
+        Path path = Paths.get(XMLPathInputGUI.getPath());
+        byte[] op = Files.readAllBytes(path);
+        byte[] org = Compression.compress(op);
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(org, "cxml").textScreen());
+    }
+    
+    void onClickDecompression() throws FileNotFoundException, IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        
+        
+        Path path = Paths.get(XMLPathInputGUI.getPath());
+        byte[] op = Files.readAllBytes(path);
+        byte[] org = Compression.decompress(op);
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(org, "xml").textScreen());
+    }
+
+    void onClickToJson() throws IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        
+        XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath());
+
+        TreeMaker treeMaker = new TreeMaker(xmlFile.getXmlList());
+        Tree tree = treeMaker.treeCreator();
+        String jsonString = tree.toJson();
+        
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(jsonString.getBytes(), "json").textScreen());
+    }
+    
+    void onClickCorrect() throws IOException{
+       XMLPathInputGUI.setPrimaryStageWidth(1200);
+
+       XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath()); 
+       String xmlString = xmlFile.validator();
+
+       XMLPathInputGUI.setPrimaryStageScene(new TextScreen(xmlString.getBytes(), "xml").textScreen());
+    }
+    
 }

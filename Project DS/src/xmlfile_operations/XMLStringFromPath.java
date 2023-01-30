@@ -26,18 +26,8 @@ public class XMLStringFromPath {
 
 
 
-    static ArrayList<String> getXMLString(String[] args) throws IOException{
-        try{
-            XMLPathInputGUI xmlPathInputGUI = new XMLPathInputGUI();
-            xmlPathInputGUI.XMLPreviwer(args);
-            XmlFile xmlFile = new XmlFile(path);
-            return xmlFile.getXmlList();
-//            BufferedReader br=new BufferedReader(new FileReader(path));
-            
-//            return br;
-        }
-        catch (FileNotFoundException ex) {
-            return getXMLString(args);
-        }
+    public static void getXMLString(String[] args) throws IOException{
+        XMLPathInputGUI xmlPathInputGUI = new XMLPathInputGUI();
+        xmlPathInputGUI.XMLPreviwer(args);
     }
 }
