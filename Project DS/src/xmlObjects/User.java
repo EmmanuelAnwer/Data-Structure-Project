@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class User
 {
-    private String id;
+    private int id;
     private String name;
     private ArrayList<Post> posts;
     private ArrayList<Follower> followers;
 
-    public String getId() { 
+    public int getId() { 
          return this.id;
     }
-    public void setId(String id) { 
+    public void setId(int id) { 
          this.id = id;
     }
     
