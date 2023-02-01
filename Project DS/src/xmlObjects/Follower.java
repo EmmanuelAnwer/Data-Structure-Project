@@ -2,12 +2,12 @@ package xmlObjects;
 
 public class Follower
 {
-    private String id;
+    private int id;
 
-    public String getId() { 
+    public int getId() { 
          return this.id ;
     }
-    public void setId(String id) { 
+    public void setId(int id) { 
          this.id = id;
     }
 
