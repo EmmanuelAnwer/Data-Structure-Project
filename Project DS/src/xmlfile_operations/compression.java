@@ -1,17 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package xmlfile_operations;
 
 import java.io.*;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
-/**
- *
- * @author HP
- */
+
+
 public class Compression {
         //input = path of XML file, output = the path where you want to save the Minify XML file
     public static String Minify(String input) throws IOException {
