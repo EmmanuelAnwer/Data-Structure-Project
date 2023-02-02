@@ -13,26 +13,26 @@ import java.util.ArrayList;
  */
 public class GraphAnalysis {
     //returning the ids of the most followed users
-    public static  ArrayList<Integer> Mostactive(int[][] matrix){
-        ArrayList<Integer> result = new ArrayList<Integer>();
-        int[] count = new int[matrix.length];
-        for(int i =0;i<matrix.length;i++){
-          for(int j =0;j<matrix[0].length;j++){  
-              if(matrix[i][j] == 1)
-                 count[i] += 1;
-          }
-        }
-        int indexMost = 0;
-        for(int z =1;z<count.length;z++){
-            if(count[z] > count[indexMost])
-               indexMost = z;
-        }
-        for(int z =0;z<count.length;z++){
-            if(count[indexMost] == count[z])
-               result.add(z+1);
-        }
-        return result;
-    }
+    public static  ArrayList<Integer> MostInfluncer(int[][] matrix){
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        int[] count = new int[matrix.length];
+        for(int i =0;i<matrix.length;i++){
+          for(int j =0;j<matrix[0].length;j++){  
+              if(matrix[j][i] == 1)
+                 count[i] += 1;
+          }
+        }
+        int indexMost = 0;
+        for(int z =1;z<count.length;z++){
+            if(count[z] > count[indexMost])
+               indexMost = z;
+        }
+        for(int z =0;z<count.length;z++){
+            if(count[indexMost] == count[z])
+               result.add(z+1);
+        }
+        return result;
+    }
     
     // returning ids of users following the most
     public static  ArrayList<Integer> Mostactive(int[][] matrix){
