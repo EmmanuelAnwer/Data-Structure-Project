@@ -31,7 +31,7 @@ public class TreeMaker {
     }
     
 
-    
+    //creating the tree
     public Tree treeCreator() throws IOException{
         TreeNode currentNode = null;
         
@@ -83,13 +83,16 @@ public class TreeMaker {
         return tree;
     }
     
+    //checking if it is an open tag 
     boolean isOpenTag(String str){
         return str.contains("<") && str.contains(">") && !str.contains("/");          
     }
     
+    //checking if it is a closed tag 
     boolean isClosedTag(String str){
         return str.contains("<") && str.contains(">") && str.contains("/");          
     }
+    
     
     String symbolRemover(String str){
         str = str.replaceAll("\\s+","");
