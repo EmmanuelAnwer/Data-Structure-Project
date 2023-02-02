@@ -11,4 +11,16 @@ public class XMLUsers{
     public void setUsers(ArrayList<User> users) { 
          this.users = users;
     }
+    
+    public int getid(User u){
+        
+        return u.getId();
+        
+    }
+    
+    public ArrayList<Follower> getFollowers(User u){
+        
+        return u.getFollowers();
+    }
+    
 }
