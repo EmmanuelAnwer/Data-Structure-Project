@@ -118,7 +118,7 @@ public class TreeNode {
         this.depth = depth;
     }
    
-   // converting the xml file to JSON 
+   // converting the tree to JSON 
     public String toJson(){
         if("".equals(this.value)){
             String result = "";
