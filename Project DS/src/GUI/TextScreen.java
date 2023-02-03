@@ -139,10 +139,21 @@ public class TextScreen {
             }
         });     
         
+        Button backButton = new Button();
+        backButton.setText("Back");
+        backButton.setPrefWidth(100);
+        backButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                onClickBack();
+            }
+        });     
+        
         // Add Okay and Browse Buttons to the Column
         vbox.getChildren().add(saveButton);
         vbox.getChildren().add(browseButton);
-        
+        vbox.getChildren().add(backButton);
+
         return vbox;
     }
     
@@ -172,4 +183,8 @@ public class TextScreen {
         this.path = textField.getText();
     }
     
+    private void onClickBack(){
+        XMLPathInputGUI.setPrimaryStageWidth(500);
+        XMLPathInputGUI.setPrimaryStageScene(new MainScreen().mainScene());
+    }
 }
