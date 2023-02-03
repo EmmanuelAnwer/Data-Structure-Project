@@ -239,10 +239,4 @@ public class XmlFile {
         this.newList = newXml;
         return this.prettifying();
     }
-    public static void main(String[] args) throws IOException {
-        XmlFile xf = new XmlFile("D:\\My-Github\\Data-Structure-Project\\indentedOut2.xml");
-        xf.validator();
-        xf.printXml();
-    }
-
 }

@@ -61,7 +61,13 @@ public class Graph {
             for(int j=0; j<pSize;j++){
                 Post post = user.getPosts().get(j);
                 String[] bodyWords = post.getBody().split("[^\\w']+"); // split post into array of words
+                ArrayList<String> postTopics = post.getTopics();
 
+                if(postTopics.contains(searchWords.toLowerCase())){
+                    pf.add(post);
+                    continue;
+                }
+                
                 //iterate for each word
                 for(int k=0; k< bodyWords.length; k++){
                     boolean matched = false;
