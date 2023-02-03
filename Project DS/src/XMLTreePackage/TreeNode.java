@@ -10,13 +10,10 @@ import java.util.List;
 public class TreeNode {
    
     private String tag;
-    private String value = "";;
-    private String attributeName = "";
-    private String attributeValue = "";
+    private String value = "";
     private List<TreeNode> nodes;
     private TreeNode parent;
     private ArrayList<TreeNode> children = new ArrayList<TreeNode>();
-    private ArrayList<TreeNode> brothers = new ArrayList<TreeNode>();
     private int depth;
     private boolean similar = false;
 
@@ -40,12 +37,7 @@ public class TreeNode {
         this.setParent(parent);
         this.parent.getChildren().add(this); 
     }
-    public void get_brothers() {
-        for (int i = 0; i < parent.children.size(); i++) {
-            brothers.add(parent.children.get(i));
-        }
-    }
-
+    
     public String getTag() {
         return tag;
     }
@@ -60,22 +52,6 @@ public class TreeNode {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
-
-    public String getAttributeValue() {
-        return attributeValue;
-    }
-
-    public void setAttributeValue(String attributeValue) {
-        this.attributeValue = attributeValue;
     }
 
     public List<TreeNode> getNodes() {
@@ -100,14 +76,6 @@ public class TreeNode {
 
     public void setChildren(ArrayList<TreeNode> children) {
         this.children = children;
-    }
-
-    public ArrayList<TreeNode> getBrothers() {
-        return brothers;
-    }
-
-    public void setBrothers(ArrayList<TreeNode> brothers) {
-        this.brothers = brothers;
     }
 
     public int getDepth() {
