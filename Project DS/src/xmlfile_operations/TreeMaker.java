@@ -13,6 +13,8 @@ import XMLTreePackage.Tree;
 import XMLTreePackage.TreeNode;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -34,7 +36,7 @@ public class TreeMaker {
     //creating the tree
     public Tree treeCreator() throws IOException{
         TreeNode currentNode = null;
-        
+        HashMap<String,Boolean> similarMap = new HashMap<String,Boolean>(); 
         
         //TODO Add \n function to fix ID problem
         // Iterate on all lines
@@ -54,7 +56,7 @@ public class TreeMaker {
                     if(parentNode.getChildren().size() > 1){
                         // Check the first two children are the same tag
                         if(parentNode.getChildren().get(0).getTag().equals(parentNode.getChildren().get(1).getTag())){
-                            parentNode.setSimilar(true);
+                            similarMap.put(parentNode.getTag(), true);
                         }
                     }
                 }
@@ -80,7 +82,22 @@ public class TreeMaker {
             }
         }
         
+        setSimilarProperty(tree.getRoot(), similarMap);
+        
+        
         return tree;
+    }
+    
+    
+    void setSimilarProperty(TreeNode root, HashMap<String,Boolean> similarMap){
+        if(similarMap.containsKey(root.getTag())){
+            root.setSimilar(true);
+        }
+        
+        for(int i = 0; i < root.getChildren().size(); i++){
+            setSimilarProperty(root.getChildren().get(i), similarMap);
+        }
+        
     }
     
     //checking if it is an open tag 

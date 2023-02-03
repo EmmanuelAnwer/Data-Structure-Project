@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class XmlFile {
     private static String fullPath;
     private ArrayList<String> xmlList;
+    private ArrayList<String> newList;
 
 
     public XmlFile(String path) throws IOException {
@@ -20,6 +21,18 @@ public class XmlFile {
 
     void setPath(String path){
         fullPath = path;
+    }
+
+    public void setXmlList(ArrayList<String> xmlList) {
+        this.xmlList = xmlList;
+    }
+
+    public void setNewList(ArrayList<String> newList) {
+        this.newList = newList;
+    }
+
+    public ArrayList<String> getNewList() {
+        return newList;
     }
 
 
@@ -223,6 +236,7 @@ public class XmlFile {
         }
 
         this.xmlList = compXml;
+        this.newList = newXml;
         return this.prettifying();
     }
     public static void main(String[] args) throws IOException {

@@ -34,14 +34,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author user
  */
 public class TextScreen {
-    
-    private final byte[] string;
+   
+    private final byte[] stringToPreview;
+    private final byte[] realString;
     private String path;
     private TextField textField;
     private String type;
     
-    TextScreen(byte[] string, String type){
-        this.string = string;
+    TextScreen(byte[] stringToPreview, byte[] realString, String type){
+        this.stringToPreview = stringToPreview;
+        this.realString = realString;
         this.type = type;
     }
     
@@ -51,7 +53,7 @@ public class TextScreen {
         
         VBox vbox = new VBox();
         
-        Text text = new Text(new String(this.string, StandardCharsets.UTF_8));
+        Text text = new Text(new String(this.stringToPreview, StandardCharsets.UTF_8));
 //        text.
         scrollPane.setFitToWidth(true);
         
@@ -146,7 +148,7 @@ public class TextScreen {
     
     private void onClickSave() throws FileNotFoundException, IOException{
         Path path = Paths.get(this.path);
-        byte[] op = this.string;
+        byte[] op = this.realString;
         Files.write(path, op);
         XMLPathInputGUI.setPrimaryStageWidth(500);
         XMLPathInputGUI.setPrimaryStageScene(new MainScreen().mainScene());

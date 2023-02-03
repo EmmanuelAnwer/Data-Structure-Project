@@ -20,6 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import xmlObjects.Graph;
+import xmlObjects.GraphAnalysis;
+import xmlObjects.XMLUsers;
 import xmlfile_operations.Compression;
 import xmlfile_operations.TreeMaker;
 import xmlfile_operations.XmlFile;
@@ -37,10 +40,14 @@ public class MainScreen{
         VBox vbox = new VBox();
         vbox.setPadding(new Insets(10,10,10,10));
         
-        vbox.getChildren().add(topButtons());
-        vbox.getChildren().add(midButtons());
-        vbox.getChildren().add(buttomButtons());
-        
+        vbox.getChildren().add(firstRow());
+        vbox.getChildren().add(secondRow());
+        vbox.getChildren().add(thirdRow());
+        vbox.getChildren().add(fourthRow());
+        vbox.getChildren().add(fifthRow());
+        vbox.getChildren().add(sixthRow());
+        vbox.getChildren().add(backButton());
+
         vbox.setSpacing(20);
 
         
@@ -50,7 +57,28 @@ public class MainScreen{
         return scene;
     }
     
-    private BorderPane topButtons(){
+    private BorderPane backButton(){
+        BorderPane hbox = new BorderPane();
+        Button backButton = new Button();
+        backButton.setText("Back");
+        backButton.setPrefWidth(100);
+        backButton.setPrefHeight(100);
+
+        backButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                XMLPathInputGUI.setPrimaryStageScene(new XMLPathInputGUI().XMLScene());
+                XMLPathInputGUI.setPrimaryStageWidth(900);
+                XMLPathInputGUI.setPrimaryStageHeight(125);
+            }
+        });
+        hbox.setLeft(backButton);
+
+        return hbox;
+    }
+    
+    
+    private BorderPane firstRow(){
         
         BorderPane hbox = new BorderPane();
         
@@ -95,7 +123,7 @@ public class MainScreen{
         return hbox;
     }
     
-    private BorderPane midButtons(){
+    private BorderPane secondRow(){
         
         BorderPane hbox = new BorderPane();
         
@@ -136,13 +164,10 @@ public class MainScreen{
         hbox.setLeft(pretifyButton);
         hbox.setRight(toJsonButton);
         
-//        hbox.getChildren().add(correctButton);
-//        hbox.getChildren().add(minifiyButton);
-        
         return hbox;
     }
 
-    private BorderPane buttomButtons(){
+    private BorderPane thirdRow(){
         
         BorderPane hbox = new BorderPane();
         
@@ -183,11 +208,110 @@ public class MainScreen{
         hbox.setLeft(compressionButton);
         hbox.setRight(decompressionButton);
         
-//        hbox.getChildren().add(correctButton);
-//        hbox.getChildren().add(minifiyButton);
+        return hbox;
+    }
+    
+    private BorderPane fourthRow(){
+        
+        BorderPane hbox = new BorderPane();
+        
+        Button compressionButton = new Button();
+        compressionButton.setText("Most Influncer");
+        compressionButton.setPrefWidth(100);
+        compressionButton.setPrefHeight(100);
+
+        compressionButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    onClickMostInfluncer();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+
+        
+        Button decompressionButton = new Button();
+        decompressionButton.setText("Most active");
+        decompressionButton.setPrefWidth(100);
+        decompressionButton.setPrefHeight(100);
+
+        decompressionButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    onClickMostactive();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });   
+        
+        hbox.setLeft(compressionButton);
+        hbox.setRight(decompressionButton);
         
         return hbox;
     }
+    
+    private BorderPane fifthRow(){
+        
+        BorderPane hbox = new BorderPane();
+        
+        Button compressionButton = new Button();
+        compressionButton.setText("Suggest Friends");
+        compressionButton.setPrefWidth(100);
+        compressionButton.setPrefHeight(100);
+
+        compressionButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                onClickSuggestFriends();
+            }
+        });
+        
+
+        
+        Button decompressionButton = new Button();
+        decompressionButton.setText("Mutual Friends");
+        decompressionButton.setPrefWidth(100);
+        decompressionButton.setPrefHeight(100);
+
+        decompressionButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                onClickMutualFriends();
+            }
+        });   
+        
+        hbox.setLeft(compressionButton);
+        hbox.setRight(decompressionButton);
+        
+        return hbox;
+    }
+    
+    private BorderPane sixthRow(){
+        
+        BorderPane hbox = new BorderPane();
+        
+        Button searchButton = new Button();
+        searchButton.setText("Search a text");
+        searchButton.setPrefWidth(100);
+        searchButton.setPrefHeight(100);
+
+        searchButton.setOnAction(new EventHandler<ActionEvent>() { 
+            @Override
+            public void handle(ActionEvent event) {
+                onClickSearchButton();
+            }
+        });
+        
+        hbox.setLeft(searchButton);
+        
+        return hbox;
+    }
+
     
     void onClickMinifiy() throws IOException{
         XMLPathInputGUI.setPrimaryStageWidth(1200);
@@ -196,7 +320,7 @@ public class MainScreen{
         String minifiedString = Compression.Minify(path);
         
         
-        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(minifiedString.getBytes(), "xml").textScreen());
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(minifiedString.getBytes(),minifiedString.getBytes(), "xml").textScreen());
     }
     
     void onClickPretify() throws IOException{
@@ -205,7 +329,7 @@ public class MainScreen{
         XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath());
         String prettifiedString = xmlFile.prettifying();
         
-        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(prettifiedString.getBytes(), "xml").textScreen());
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(prettifiedString.getBytes(),prettifiedString.getBytes(), "xml").textScreen());
     }
     
     void onClickCompression() throws FileNotFoundException, IOException{
@@ -215,7 +339,7 @@ public class MainScreen{
         Path path = Paths.get(XMLPathInputGUI.getPath());
         byte[] op = Files.readAllBytes(path);
         byte[] org = Compression.compress(op);
-        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(org, "cxml").textScreen());
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(org,org,"cxml").textScreen());
     }
     
     void onClickDecompression() throws FileNotFoundException, IOException{
@@ -225,7 +349,7 @@ public class MainScreen{
         Path path = Paths.get(XMLPathInputGUI.getPath());
         byte[] op = Files.readAllBytes(path);
         byte[] org = Compression.decompress(op);
-        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(org, "xml").textScreen());
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(org,org,"xml").textScreen());
     }
 
     void onClickToJson() throws IOException{
@@ -237,7 +361,7 @@ public class MainScreen{
         Tree tree = treeMaker.treeCreator();
         String jsonString = tree.toJson();
         
-        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(jsonString.getBytes(), "json").textScreen());
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(jsonString.getBytes(),jsonString.getBytes(), "json").textScreen());
     }
     
     void onClickCorrect() throws IOException{
@@ -245,8 +369,81 @@ public class MainScreen{
 
        XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath()); 
        String xmlString = xmlFile.validator();
+       ArrayList<String> newXml = xmlFile.getNewList();
+       xmlFile.setXmlList(newXml);
+       String correctedString = xmlFile.prettifying();
 
-       XMLPathInputGUI.setPrimaryStageScene(new TextScreen(xmlString.getBytes(), "xml").textScreen());
+       XMLPathInputGUI.setPrimaryStageScene(new TextScreen(xmlString.getBytes(),correctedString.getBytes(),"xml").textScreen());
     }
     
+    void onClickMostactive() throws IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        
+        XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath());
+
+        TreeMaker treeMaker = new TreeMaker(xmlFile.getXmlList());
+        Tree tree = treeMaker.treeCreator();
+        
+        XMLUsers xmlUsers = XMLUsers.usersFactory(tree);
+        Graph graph = new Graph(xmlUsers);
+        
+        int[][] adjacencyMatrix = graph.getAdjMat();
+        
+        
+        
+        ArrayList<Integer> mostInfluncers= GraphAnalysis.Mostactive(adjacencyMatrix);
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        
+        
+        for(int i = 0; i < mostInfluncers.size(); i++){
+            ids.add(xmlUsers.getByIndex(mostInfluncers.get(i)-1).getId());
+        }
+        
+        
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(ids.toString().getBytes(),ids.toString().getBytes(),"txt").textScreen());
+
+    }
+    
+    void onClickMostInfluncer() throws IOException{
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        
+        XmlFile xmlFile = new XmlFile(XMLPathInputGUI.getPath());
+
+        TreeMaker treeMaker = new TreeMaker(xmlFile.getXmlList());
+        Tree tree = treeMaker.treeCreator();
+        
+        XMLUsers xmlUsers = XMLUsers.usersFactory(tree);
+        Graph graph = new Graph(xmlUsers);
+        
+        int[][] adjacencyMatrix = graph.getAdjMat();
+        
+        
+        
+        ArrayList<Integer> mostInfluncers= GraphAnalysis.Mostactive(adjacencyMatrix);
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        
+        
+        for(int i = 0; i < mostInfluncers.size(); i++){
+            ids.add(xmlUsers.getByIndex(mostInfluncers.get(i)-1).getId());
+        }
+        
+        
+        XMLPathInputGUI.setPrimaryStageScene(new TextScreen(ids.toString().getBytes(),ids.toString().getBytes(),"txt").textScreen());
+
+    }
+    
+    void onClickSuggestFriends(){
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        XMLPathInputGUI.setPrimaryStageScene(new SuggestScreen().XMLScene());
+
+    }
+    
+    void onClickMutualFriends(){
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        XMLPathInputGUI.setPrimaryStageScene(new MutualFriendsScreen().XMLScene());
+    }
+    void onClickSearchButton(){
+        XMLPathInputGUI.setPrimaryStageWidth(1200);
+        XMLPathInputGUI.setPrimaryStageScene(new SearchScreen().XMLScene());
+    }
 }

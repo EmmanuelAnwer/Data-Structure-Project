@@ -25,6 +25,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class XMLPathInputGUI  extends Application{
     final private String XML_STAGE_TITLE = "XML path entry"; 
@@ -68,7 +70,7 @@ public class XMLPathInputGUI  extends Application{
         launch(args);
     }
     
-    private Scene XMLScene(){
+    public Scene XMLScene(){
         BorderPane borderPane = new BorderPane();
         borderPane.setPadding(new Insets(10,10,10,10));
         
@@ -158,6 +160,9 @@ public class XMLPathInputGUI  extends Application{
     
     private void onClickBrowse(){
         JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileFilter filter = new FileNameExtensionFilter("File", new String[] {"xml", "cxml"});
+        chooser.setFileFilter(filter);
         chooser.showDialog(chooser, "Open");
         File xmlFile = chooser.getSelectedFile();
         this.path = xmlFile.getPath();
